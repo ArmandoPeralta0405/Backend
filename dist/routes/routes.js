@@ -1,0 +1,31 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+//Esta importacion es netamente solo para hacer una copia de la base de datos del sistema
+const backupBdRoutes_1 = __importDefault(require("../routes/backupBdRoutes"));
+const authRoutes_1 = __importDefault(require("../routes/authRoutes"));
+const usuarioRoutes_1 = __importDefault(require("../routes/usuarioRoutes"));
+const rolRoutes_1 = __importDefault(require("../routes/rolRoutes"));
+const moduloRoutes_1 = __importDefault(require("../routes/moduloRoutes"));
+const tipo_programaRoutes_1 = __importDefault(require("../routes/tipo_programaRoutes"));
+const depositoRoutes_1 = __importDefault(require("../routes/depositoRoutes"));
+const impuestoRoutes_1 = __importDefault(require("../routes/impuestoRoutes"));
+const marcaRoutes_1 = __importDefault(require("../routes/marcaRoutes"));
+const unidad_medidaRoutes_1 = __importDefault(require("../routes/unidad_medidaRoutes"));
+const articuloRoutes_1 = __importDefault(require("../routes/articuloRoutes"));
+const router = express_1.default.Router();
+router.use(backupBdRoutes_1.default);
+router.use(authRoutes_1.default);
+router.use(usuarioRoutes_1.default);
+router.use(rolRoutes_1.default);
+router.use(moduloRoutes_1.default);
+router.use(tipo_programaRoutes_1.default);
+router.use(depositoRoutes_1.default);
+router.use(impuestoRoutes_1.default);
+router.use(marcaRoutes_1.default);
+router.use(unidad_medidaRoutes_1.default);
+router.use(articuloRoutes_1.default);
+exports.default = router;
