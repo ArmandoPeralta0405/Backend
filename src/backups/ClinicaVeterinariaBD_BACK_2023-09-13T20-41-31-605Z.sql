@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   `direccion` varchar(255) DEFAULT NULL COMMENT 'Dirección del cliente',
   `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Estado del cliente',
   PRIMARY KEY (`cliente_id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre clientes en el sistema';
+) ENGINE = InnoDB AUTO_INCREMENT = 5 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre clientes en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: deposito
@@ -358,48 +358,92 @@ VALUES
 INSERT INTO
   `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
 VALUES
-  (1, 1, 8500.000);
+  (1, 1, 5500.000);
 INSERT INTO
   `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
 VALUES
-  (1, 2, 1.254);
+  (2, 1, 11500.000);
 INSERT INTO
   `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
 VALUES
-  (2, 1, 12500.000);
+  (3, 1, 6200.000);
 INSERT INTO
   `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
 VALUES
-  (2, 2, 1.990);
+  (4, 1, 3500.000);
 INSERT INTO
   `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
 VALUES
-  (3, 1, 4500.000);
-INSERT INTO
-  `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
-VALUES
-  (3, 2, 0.750);
-INSERT INTO
-  `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
-VALUES
-  (4, 1, 8500.000);
-INSERT INTO
-  `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
-VALUES
-  (4, 2, 1.200);
-INSERT INTO
-  `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
-VALUES
-  (5, 1, 3500.000);
-INSERT INTO
-  `articulo_lista_precio` (`articulo_id`, `lista_precio_id`, `precio`)
-VALUES
-  (5, 2, 0.250);
+  (5, 1, 2100.000);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: cliente
 # ------------------------------------------------------------
 
+INSERT INTO
+  `cliente` (
+    `cliente_id`,
+    `nombre`,
+    `apellido`,
+    `cedula`,
+    `telefono`,
+    `direccion`,
+    `estado`
+  )
+VALUES
+  (
+    1,
+    'Armando Ariel',
+    'Peralta Martinez',
+    '5955455',
+    '975489075',
+    'Barrio Virgen Serrana - Dr. J. Eulogio Estigarribia - Paraguay',
+    1
+  );
+INSERT INTO
+  `cliente` (
+    `cliente_id`,
+    `nombre`,
+    `apellido`,
+    `cedula`,
+    `telefono`,
+    `direccion`,
+    `estado`
+  )
+VALUES
+  (
+    2,
+    'Jorge',
+    'Villasanti',
+    '5125963',
+    '971852963',
+    NULL,
+    1
+  );
+INSERT INTO
+  `cliente` (
+    `cliente_id`,
+    `nombre`,
+    `apellido`,
+    `cedula`,
+    `telefono`,
+    `direccion`,
+    `estado`
+  )
+VALUES
+  (3, 'Mariela', 'Pereira', '1288966', NULL, NULL, 1);
+INSERT INTO
+  `cliente` (
+    `cliente_id`,
+    `nombre`,
+    `apellido`,
+    `cedula`,
+    `telefono`,
+    `direccion`,
+    `estado`
+  )
+VALUES
+  (4, 'Agripino', 'Escamilla', '7859222', NULL, NULL, 1);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: deposito
@@ -438,11 +482,7 @@ VALUES
 INSERT INTO
   `lista_precio` (`lista_precio_id`, `descripcion`, `moneda_id`)
 VALUES
-  (1, 'Precios en Guaranies', 1);
-INSERT INTO
-  `lista_precio` (`lista_precio_id`, `descripcion`, `moneda_id`)
-VALUES
-  (2, 'Precios en Dolares', 2);
+  (1, 'Precio General', 1);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: marca
@@ -506,22 +546,6 @@ INSERT INTO
   `moneda` (`moneda_id`, `descripcion`, `abreviacion`)
 VALUES
   (1, 'Guaranies', 'Gs');
-INSERT INTO
-  `moneda` (`moneda_id`, `descripcion`, `abreviacion`)
-VALUES
-  (2, 'Dolares', 'Us');
-INSERT INTO
-  `moneda` (`moneda_id`, `descripcion`, `abreviacion`)
-VALUES
-  (3, 'Real', 'Rl');
-INSERT INTO
-  `moneda` (`moneda_id`, `descripcion`, `abreviacion`)
-VALUES
-  (4, 'Peso Argentino', 'Pz A');
-INSERT INTO
-  `moneda` (`moneda_id`, `descripcion`, `abreviacion`)
-VALUES
-  (5, 'Peso Uruguayo', 'Ps U');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: rol

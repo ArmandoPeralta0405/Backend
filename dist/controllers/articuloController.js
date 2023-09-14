@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateEstado = exports.deleteRegister = exports.updateRegister = exports.insertRegister = exports.getOneRegister = exports.getAllRegister = void 0;
+exports.updateEstado = exports.deleteRegister = exports.updateRegister = exports.insertRegister = exports.getOneRegisterView = exports.getOneRegister = exports.getAllRegister = void 0;
 const database_1 = require("../database");
 // METODOS DEL CONTROLADOR
 const getAllRegister = async (req, res) => {
@@ -55,6 +55,34 @@ const getOneRegister = async (req, res) => {
     }
 };
 exports.getOneRegister = getOneRegister;
+const getOneRegisterView = async (req, res) => {
+    const ID = req.params.id;
+    try {
+        const connection = await (0, database_1.conexionBD)();
+        const [rows] = await connection.execute('SELECT * FROM articulo_view WHERE articulo_id = ?', [ID]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Articulo no encontrado' });
+        }
+        const articulo = {
+            articulo_id: rows[0].articulo_id,
+            descripcion: rows[0].descripcion,
+            codigo_alfanumerico: rows[0].codigo_alfanumerico,
+            marca_id: rows[0].marca_id,
+            marca_descripcion: rows[0].marca_descripcion,
+            impuesto_id: rows[0].impuesto_id,
+            impuesto_descripcion: rows[0].impuesto_descripcion,
+            unidad_medida_id: rows[0].unidad_medida_id,
+            unidad_medida_descripcion: rows[0].unidad_medida_descripcion,
+            estado: rows[0].estado
+        };
+        res.status(200).json(articulo);
+    }
+    catch (error) {
+        console.error('Error al obtener un articulo:', error);
+        res.status(500).json({ message: 'Error al obtener un articulo', error: error });
+    }
+};
+exports.getOneRegisterView = getOneRegisterView;
 const insertRegister = async (req, res) => {
     try {
         const { descripcion, codigo_alfanumerico, marca_id, impuesto_id, unidad_medida_id } = req.body;

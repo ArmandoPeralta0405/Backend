@@ -27,21 +27,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const articuloController = __importStar(require("../controllers/articuloController")); // Importa el controlador
+const articuloListaPrecioController = __importStar(require("../controllers/articulo_lista_precioController")); // Importa el controlador
 const authMiddleware_1 = require("../middlewares/authMiddleware"); // Importa el middleware de autenticación
 const router = express_1.default.Router();
-// Ruta para obtener todos los registros de articulo (protegida por autenticación)
-router.get('/articulos', authMiddleware_1.authenticate, articuloController.getAllRegister);
-// Ruta para obtener un registro de articulo por ID (protegida por autenticación)
-router.get('/articulos/:id', authMiddleware_1.authenticate, articuloController.getOneRegister);
-// Ruta para obtener un registro de articulo por ID (protegida por autenticación)
-router.get('/articulos_view/:id', authMiddleware_1.authenticate, articuloController.getOneRegisterView);
-// Ruta para insertar un nuevo registro de articulo (protegida por autenticación)
-router.post('/articulos', authMiddleware_1.authenticate, articuloController.insertRegister);
-// Ruta para actualizar un registro de articulo por ID (protegida por autenticación)
-router.put('/articulos/:id', authMiddleware_1.authenticate, articuloController.updateRegister);
-// Ruta para eliminar un registro de articulo por ID (protegida por autenticación)
-router.delete('/articulos/:id', authMiddleware_1.authenticate, articuloController.deleteRegister);
-// Ruta para actualizar el estado de articulo por ID (protegida por autenticación)
-router.put('/articulos/estado/:id', authMiddleware_1.authenticate, articuloController.updateEstado);
+//Recuperar todas las listas de precios del articulo (Con autentizacion)
+router.get('/articulos_listas_precios/:id', authMiddleware_1.authenticate, articuloListaPrecioController.obtenerListasPreciosPorArticulo);
+// Ruta para actualizar o insertar precio (Con autentizacion)
+router.post('/articulos_listas_precios/insertar_editar', authMiddleware_1.authenticate, articuloListaPrecioController.insertarModificarListaPrecio);
 exports.default = router;

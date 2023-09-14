@@ -5,20 +5,20 @@ import router from "./routes/routes";
 
 const app = express();
 
-const ipAddress = '192.168.0.111'; // Cambia a tu dirección IP local
+const ipAddress = 'localhost'; // Cambia a tu dirección IP local
 const ipAddressLocal = 'localhost'; // Cambia a tu dirección IP local
 
 // Middleware para parsear JSON en las solicitudes
 app.use(express.json());
 // Configura CORS para permitir solicitudes desde el dominio de tu aplicación Angular
 const corsOptions = {
-  origin: 'http://'+ipAddress+':4200', // Reemplaza con tu dirección IP local y el puerto de tu aplicación Angular
+  origin: '*', // Reemplaza con tu dirección IP local y el puerto de tu aplicación Angular
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
-app.use(cors()); // Usa cors con las opciones configuradas
+app.use(cors(corsOptions)); // Usa cors con las opciones configuradas
 
 app.use('/api', router);
 

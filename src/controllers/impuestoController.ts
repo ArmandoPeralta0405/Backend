@@ -18,7 +18,8 @@ export const getAllRegister = async (req: Request, res: Response) => {
             impuestos.push({
                 impuesto_id: row.impuesto_id,
                 descripcion: row.descripcion,
-                valor: row.valor
+                valor: row.valor,
+                porcentaje: row.porcentaje
             });
         }
 
@@ -48,6 +49,7 @@ export const getOneRegister = async (req: Request, res: Response) => {
             impuesto_id: rows[0].impuesto_id,
             descripcion: rows[0].descripcion,
             valor: rows[0].valor,
+            porcentaje: rows[0].porcentaje
         };
 
         res.status(200).json(impuesto);
@@ -59,13 +61,16 @@ export const getOneRegister = async (req: Request, res: Response) => {
 
 export const insertRegister = async (req: Request, res: Response) => {
     try {
-        const { descripcion, valor } = req.body;
+        const { descripcion, valor, porcentaje } = req.body;
         const missingFields = [];
 
         if (!descripcion) missingFields.push('descripcion');
 
         if (valor === undefined || valor === null) {
             missingFields.push('valor');
+        }
+        if (porcentaje === undefined || porcentaje === null) {
+            missingFields.push('porcentaje');
         }
 
         if (missingFields.length > 0) {
@@ -80,8 +85,8 @@ export const insertRegister = async (req: Request, res: Response) => {
         }
 
         await connection.execute(
-            'INSERT INTO impuesto (descripcion, valor) VALUES (?, ?)',
-            [descripcion, valor]
+            'INSERT INTO impuesto (descripcion, valor, porcentaje) VALUES (?, ?, ?)',
+            [descripcion, valor, porcentaje]
         );
 
         res.status(201).json({ message: 'impuesto registrado con éxito' });
@@ -93,7 +98,7 @@ export const insertRegister = async (req: Request, res: Response) => {
 
 export const updateRegister = async (req: Request, res: Response) => {
     try {
-        const { descripcion, valor } = req.body;
+        const { descripcion, valor, porcentaje } = req.body;
         const impuesto_id = req.params.id; 
 
         if (!impuesto_id) {
@@ -116,8 +121,8 @@ export const updateRegister = async (req: Request, res: Response) => {
         }
 
         await connection.execute(
-            'UPDATE impuesto SET descripcion = ?, valor = ? WHERE impuesto_id = ?',
-            [descripcion, valor, impuesto_id]
+            'UPDATE impuesto SET descripcion = ?, valor = ?, porcentaje = ? WHERE impuesto_id = ?',
+            [descripcion, valor, porcentaje, impuesto_id]
         );
 
         const [updatedimpuestoRows]: any = await connection.execute('SELECT * FROM impuesto WHERE impuesto_id = ?', [impuesto_id]);
@@ -126,6 +131,7 @@ export const updateRegister = async (req: Request, res: Response) => {
             impuesto_id: updatedimpuestoRows[0].impuesto_id,
             descripcion: updatedimpuestoRows[0].descripcion,
             valor: updatedimpuestoRows[0].valor,
+            porcentaje: updatedimpuestoRows[0].porcentaje
         };
 
         res.status(200).json({ message: 'impuesto actualizado con éxito', impuesto: impuestoActualizado });
@@ -154,7 +160,8 @@ export const deleteRegister = async (req: Request, res: Response) => {
         const impuestoEliminado: ImpuestoModel = {
             impuesto_id: deleteResult.insertId, 
             descripcion: '', 
-            valor:0
+            valor:0,
+            porcentaje:0
         };
 
         res.status(200).json({ message: 'impuesto eliminado con éxito', impuesto: impuestoEliminado });
