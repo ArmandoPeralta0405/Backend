@@ -18,7 +18,8 @@ export const getAllRegister = async (req: Request, res: Response) => {
             monedas.push({
                 moneda_id: row.moneda_id,
                 descripcion: row.descripcion,
-                abreviacion: row.abreviacion
+                abreviacion: row.abreviacion,
+                decimal: row.decimal
             });
         }
 
@@ -49,7 +50,8 @@ export const getOneRegister = async (req: Request, res: Response) => {
         const moneda: MonedaModel = {
             moneda_id: rows[0].moneda_id,
             descripcion: rows[0].descripcion,
-            abreviacion: rows[0].abreviacion
+            abreviacion: rows[0].abreviacion,
+            decimal: rows[0].decimal
         };
 
         // Envía la respuesta con lo encontrado
@@ -62,12 +64,13 @@ export const getOneRegister = async (req: Request, res: Response) => {
 
 export const insertRegister = async (req: Request, res: Response) => {
     try {
-        const { descripcion, abreviacion } = req.body;
+        const { descripcion, abreviacion, decimal } = req.body;
         const missingFields = [];
 
         // Verifica que todos los campos necesarios estén definidos en el cuerpo de la solicitud
         if (!descripcion) missingFields.push('descripcion');
         if (!abreviacion) missingFields.push('abreviacion');
+        if (!decimal) missingFields.push('decimal');
 
         if (missingFields.length > 0) {
             return res.status(400).json({ message: 'Faltan campos obligatorios', missingFields });
@@ -83,8 +86,8 @@ export const insertRegister = async (req: Request, res: Response) => {
 
         // Ejecuta una consulta para insertar
         await connection.execute(
-            'INSERT INTO moneda (descripcion, abreviacion) VALUES (?, ?)',
-            [descripcion, abreviacion]
+            'INSERT INTO moneda (descripcion, abreviacion, `decimal`) VALUES (?, ?, ?)',
+            [descripcion, abreviacion, decimal]
         );
 
         res.status(201).json({ message: 'Moneda registrado con éxito' });
@@ -96,11 +99,11 @@ export const insertRegister = async (req: Request, res: Response) => {
 
 export const updateRegister = async (req: Request, res: Response) => {
     try {
-        const { descripcion, abreviacion } = req.body;
+        const { descripcion, abreviacion, decimal } = req.body;
         const moneda_id = req.params.id; // Recupera ID de los parámetros de la ruta
 
         // Verifica que el ID y al menos un campo obligatorio estén presentes
-        if (!moneda_id || (descripcion === undefined && abreviacion === undefined)) {
+        if (!moneda_id || (descripcion === undefined && abreviacion === undefined && decimal === undefined)) {
             return res.status(400).json({ message: 'Falta el ID de la moneda o al menos un campo obligatorio' });
         }
 
@@ -136,6 +139,11 @@ export const updateRegister = async (req: Request, res: Response) => {
             sqlParams.push(abreviacion);
         }
 
+        if (decimal !== undefined) {
+            sqlQuery += ' `decimal` = ?,';
+            sqlParams.push(decimal);
+        }
+
         // Elimina la última coma de la consulta SQL
         sqlQuery = sqlQuery.slice(0, -1);
 
@@ -153,7 +161,8 @@ export const updateRegister = async (req: Request, res: Response) => {
         const monedaActualizado: MonedaModel = {
             moneda_id: updatedmonedaRows[0].moneda_id,
             descripcion: updatedmonedaRows[0].descripcion,
-            abreviacion: updatedmonedaRows[0].abreviacion
+            abreviacion: updatedmonedaRows[0].abreviacion,
+            decimal: updatedmonedaRows[0].decimal
         };
 
         res.status(200).json({ message: 'Moneda actualizada con éxito', moneda: monedaActualizado });
@@ -187,6 +196,7 @@ export const deleteRegister = async (req: Request, res: Response) => {
             moneda_id: deleteResult.insertId, // Puedes usar el insertId como ID del moneda eliminado
             descripcion: '', // Puedes dejar la descripción en blanco o definir un valor apropiado
             abreviacion: '', // Puedes dejar la abreviación en blanco o definir un valor apropiado
+            decimal: 0
         };
 
         res.status(200).json({ message: 'Moneda eliminada con éxito', unidad_medida: monedaEliminado });

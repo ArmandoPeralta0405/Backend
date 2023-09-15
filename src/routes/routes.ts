@@ -16,6 +16,8 @@ import monedaRoutes from '../routes/monedaRoutes';
 import listaPrecioRoutes from '../routes/lista_precioRoutes';
 import articuloListaPrecioRoutes from '../routes/articulo_lista_precioRoutes';
 import clienteRoutes from '../routes/clienteRoutes';
+import pedidoVentaRoutes from '../routes/pedido_ventaRoutes';
+import pedidoVentaDetalleRoutes from '../routes/pedido_venta_detalleRoutes';
 
 
 
@@ -37,7 +39,8 @@ router.use(monedaRoutes);
 router.use(listaPrecioRoutes);
 router.use(articuloListaPrecioRoutes);
 router.use(clienteRoutes);
-
+router.use(pedidoVentaRoutes);
+router.use(pedidoVentaDetalleRoutes);
 
 
 export default router;
