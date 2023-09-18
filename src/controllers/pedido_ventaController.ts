@@ -255,3 +255,21 @@ export const updateEstado = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error al actualizar estado del pedido de venta', error: error });
     }
 };
+
+export const NumeroPedidoDisponible = async (req: Request, res: Response) => {
+
+    try {
+        const connection = await conexionBD();
+        
+        // Llamar al procedimiento almacenado P_Obtener_numero_pedido
+        const [result]: any = await connection.query('CALL P_Obtener_numero_pedido()');
+        
+        // Obtener el resultado del procedimiento almacenado
+        const numeroPedidoDisponible = result[0][0].NumeroPedido;
+
+        res.status(200).json(numeroPedidoDisponible);
+    } catch (error) {
+        console.error('Error al obtener el número de pedido disponible:', error);
+        res.status(500).json({ message: 'Error al obtener el número de pedido disponible', error: error });
+    }
+};

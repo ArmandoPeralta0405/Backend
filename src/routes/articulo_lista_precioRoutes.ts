@@ -10,4 +10,7 @@ router.get('/articulos_listas_precios/:id', authenticate, articuloListaPrecioCon
 // Ruta para actualizar o insertar precio (Con autentizacion)
 router.post('/articulos_listas_precios/insertar_editar', authenticate, articuloListaPrecioController.insertarModificarListaPrecio);
 
+// Ruta para obtener precios de articulos (Con autentizacion)
+router.post('/obtener_precio', authenticate, articuloListaPrecioController.obtenerPrecioPorArticuloYLista);
+
 export default router;

@@ -74,3 +74,28 @@ export const insertarModificarListaPrecio = async (req: Request, res: Response) 
         res.status(500).json({ message: 'Error al actualizar o insertar precio', error: error });
     }
 };
+
+export const obtenerPrecioPorArticuloYLista = async (req: Request, res: Response) => {
+  
+    const { articulo_id, lista_precio_id } = req.body.filtrosPrecio;
+
+    
+    try {
+        const connection = await conexionBD();
+
+        // Realiza la consulta SQL para obtener el precio
+        const [rows]: any = await connection.execute('SELECT precio FROM articulo_lista_precio_view WHERE articulo_id = ? AND lista_precio_id = ?', [articulo_id, lista_precio_id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Precio no encontrado para el artículo y la lista de precio proporcionados.' });
+        }
+
+        const precio = rows[0].precio;
+
+        res.status(200).json({ precio });
+    } catch (error) {
+        console.error('Error al obtener el precio:', error);
+        res.status(500).json({ message: 'Error al obtener el precio', error: error });
+    }
+};
+

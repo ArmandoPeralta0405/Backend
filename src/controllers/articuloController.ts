@@ -265,3 +265,54 @@ export const updateEstado = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error al actualizar estado del articulo', error: error });
     }
 };
+
+export const searchArticulo = async (req: Request, res: Response) => {
+    const filtros = req.body.filtros; // Cambiar req.params por req.body si los datos se envían en el cuerpo de la solicitud
+
+    try {
+        if (!filtros) {
+            return res.status(400).json({ message: 'Parámetro "filtros" no proporcionado o es nulo.' });
+        }
+
+        const connection = await conexionBD();
+
+        // Realiza la consulta SQL solo si filtros tiene un valor válido
+        const [codigoRows]: any = await connection.execute('SELECT * FROM articulo WHERE estado = 1 and codigo_alfanumerico LIKE ?', [filtros.filtros]);
+
+        if (codigoRows.length > 0) {
+            const articulo: ArticuloModel = {
+                articulo_id: codigoRows[0].articulo_id,
+                descripcion: codigoRows[0].descripcion,
+                codigo_alfanumerico: codigoRows[0].codigo_alfanumerico,
+                marca_id: codigoRows[0].marca_id,
+                impuesto_id: codigoRows[0].impuesto_id,
+                unidad_medida_id: codigoRows[0].unidad_medida_id,
+                estado: codigoRows[0].estado
+            };
+
+            return res.status(200).json(articulo);
+        } else {
+            // Si no se encuentra por código alfanumérico, busca por artículo_id
+            const [idRows]: any = await connection.execute('SELECT * FROM articulo WHERE estado = 1 and articulo_id = ?', [filtros.filtros]);
+
+            if (idRows.length === 0) {
+                return res.status(404).json({ message: 'Artículo no encontrado o no habilitado' });
+            }
+
+            const articulo: ArticuloModel = {
+                articulo_id: idRows[0].articulo_id,
+                descripcion: idRows[0].descripcion,
+                codigo_alfanumerico: idRows[0].codigo_alfanumerico,
+                marca_id: idRows[0].marca_id,
+                impuesto_id: idRows[0].impuesto_id,
+                unidad_medida_id: idRows[0].unidad_medida_id,
+                estado: idRows[0].estado
+            };
+
+            return res.status(200).json(articulo);
+        }
+    } catch (error) {
+        console.error('Error al buscar artículo:', error);
+        res.status(500).json({ message: 'Error al buscar artículo', error: error });
+    }
+};

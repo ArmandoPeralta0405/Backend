@@ -25,4 +25,7 @@ router.delete('/articulos/:id', authenticate, articuloController.deleteRegister)
 // Ruta para actualizar el estado de articulo por ID (protegida por autenticación)
 router.put('/articulos/estado/:id', authenticate, articuloController.updateEstado);
 
+// Ruta para actualizar el estado de articulo por ID (protegida por autenticación)
+router.post('/articulos/search', authenticate, articuloController.searchArticulo);
+
 export default router;

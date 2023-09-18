@@ -22,5 +22,8 @@ router.delete('/pedidos_ventas/:id', authenticate, pedidoVentaController.deleteR
 // Ruta para actualizar el estado de pedidos de ventas por ID (protegida por autenticación)
 router.put('/pedidos_ventas/estado/:id', authenticate, pedidoVentaController.updateEstado);
 
+// Ruta para obtener el numero de pedido disponible (protegida por autenticación)
+router.get('/numero_disponible_pedido', authenticate, pedidoVentaController.NumeroPedidoDisponible);
+
 
 export default router;
