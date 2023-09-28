@@ -5,7 +5,8 @@ import router from "./routes/routes";
 
 const app = express();
 
-const ipAddress = '192.168.0.111'; // Cambia a tu dirección IP local
+//const ipAddress = '192.168.0.111'; // Direccion IP TRABAJO
+const ipAddress = '192.168.100.7'; // Direccion IP CASA
 const ipAddressLocal = 'localhost'; // Cambia a tu dirección IP local
 
 // Middleware para parsear JSON en las solicitudes

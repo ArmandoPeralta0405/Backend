@@ -25,5 +25,8 @@ router.put('/pedidos_ventas/estado/:id', authenticate, pedidoVentaController.upd
 // Ruta para obtener el numero de pedido disponible (protegida por autenticación)
 router.get('/numero_disponible_pedido', authenticate, pedidoVentaController.NumeroPedidoDisponible);
 
+// Ruta para obtener el comprobante de pedidos de ventas por ID (protegida por autenticación)
+router.get('/pedidos_ventas_comprobantes/:id', authenticate, pedidoVentaController.getImpresionPedidoVenta);
+
 
 export default router;

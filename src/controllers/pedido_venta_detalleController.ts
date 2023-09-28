@@ -26,7 +26,8 @@ export const getAllRegister = async (req: Request, res: Response) => {
                 monto_iva: row.monto_iva,
                 monto_sub_total: row.monto_sub_total,
                 porcentaje_iva: row.porcentaje_iva,
-                numero_pedido: row.numero_pedido
+                numero_pedido: row.numero_pedido,
+                referencia: row.referencia
             });
         }
 
@@ -63,7 +64,8 @@ export const getOneRegister = async (req: Request, res: Response) => {
                 precio: row.precio,
                 monto_neto: row.monto_neto,
                 monto_iva: row.monto_iva,
-                porcentaje_iva: row.porcentaje_iva
+                porcentaje_iva: row.porcentaje_iva,
+                referencia: row.referencia
             });
         }
 
@@ -103,7 +105,8 @@ export const getOneRegisterView = async (req: Request, res: Response) => {
                 monto_iva: row.monto_iva,
                 monto_sub_total: row.monto_sub_total,
                 porcentaje_iva: row.porcentaje_iva,
-                numero_pedido: row.numero_pedido
+                numero_pedido: row.numero_pedido,
+                referencia: row.referencia
             });
         }
 

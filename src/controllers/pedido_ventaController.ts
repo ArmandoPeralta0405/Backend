@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import { conexionBD } from '../database';
 import { PedidoVentaModel, PedidoVentaModelVista } from '../models/pedido_ventaModel'; 
+import puppeteer from 'puppeteer';
+import ejs from 'ejs';
+import fs from 'fs';
+import path from 'path'; // Importa la biblioteca 'path'
 
 // METODOS DEL CONTROLADOR
 export const getAllRegister = async (req: Request, res: Response) => {
@@ -172,15 +176,15 @@ export const insertRegister = async (req: Request, res: Response) => {
                 monto_iva = Number(monto_iva.toFixed(decimal));
 
                 await connection.execute(
-                    'INSERT INTO pedido_venta_detalle (pedido_venta_id, item_numero, articulo_id, cantidad, precio, monto_neto, monto_iva, porcentaje_iva) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [pedidoVentaId, detalle.item_numero, detalle.articulo_id, detalle.cantidad, detalle.precio, monto_neto, monto_iva, porcentaje]
+                    'INSERT INTO pedido_venta_detalle (pedido_venta_id, item_numero, articulo_id, cantidad, precio, monto_neto, monto_iva, porcentaje_iva, referencia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [pedidoVentaId, detalle.item_numero, detalle.articulo_id, detalle.cantidad, detalle.precio, monto_neto, monto_iva, porcentaje, detalle.referencia]
                 );
             }
 
             // Hacer commit de la transacción
             await connection.commit();
 
-            res.status(201).json({ message: 'Pedido de venta registrado con éxito' });
+            res.status(201).json({ message: 'Pedido de venta registrado con éxito', id_retornado: pedidoVentaId });
         } catch (error) {
             // En caso de error, hacer rollback de la transacción y devolver un error
             await connection.rollback();
@@ -271,5 +275,46 @@ export const NumeroPedidoDisponible = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error al obtener el número de pedido disponible:', error);
         res.status(500).json({ message: 'Error al obtener el número de pedido disponible', error: error });
+    }
+};
+
+export const getImpresionPedidoVenta = async (req: Request, res: Response) => {
+    
+    const ID = req.params.id; 
+    
+    try {
+        
+        const connection = await conexionBD();
+
+       
+        const [rows]: any = await connection.execute('SELECT * FROM pedido_venta_comprobante_view WHERE pedido_venta_id = ?', [ID]);
+
+       
+        const pedidos_ventas_comprobante: any[] = [];
+
+        for (const row of rows) {
+            pedidos_ventas_comprobante.push({
+                pedido_venta_id: row.pedido_venta_id,
+                numero_pedido: row.numero_pedido,
+                estado: row.estado,
+                fecha_hora: row.fecha_hora,
+                moneda_id: row.moneda_id,
+                descripcion_moneda: row.descripcion_moneda,
+                lista_precio_id: row.lista_precio_id,
+                descripcion_lista_precio: row.descripcion_lista_precio,
+                observacion: row.observacion,
+                item_numero: row.item_numero,
+                referencia: row.referencia,
+                descripcion_articulo: row.descripcion_articulo,
+                cantidad: row.cantidad,
+                precio: row.precio,
+                monto_sub_total: row.monto_sub_total
+            });
+        }
+
+        res.status(200).json(pedidos_ventas_comprobante);
+    } catch (error) {
+        console.error('Error al obtener el comprobante del pedido:', error);
+        res.status(500).json({ message: 'Error al obtener el comprobante del pedido', error: error });
     }
 };

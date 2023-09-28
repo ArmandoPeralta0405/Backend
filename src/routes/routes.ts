@@ -18,12 +18,13 @@ import articuloListaPrecioRoutes from '../routes/articulo_lista_precioRoutes';
 import clienteRoutes from '../routes/clienteRoutes';
 import pedidoVentaRoutes from '../routes/pedido_ventaRoutes';
 import pedidoVentaDetalleRoutes from '../routes/pedido_venta_detalleRoutes';
+import cajaRoutes from '../routes/cajaRoutes';
 
 
 
 const router = express.Router();
 
-//router.use(backupBdRoutes);
+router.use(backupBdRoutes);
 
 router.use(authRoutes);
 router.use(usuarioRoutes);
@@ -41,6 +42,7 @@ router.use(articuloListaPrecioRoutes);
 router.use(clienteRoutes);
 router.use(pedidoVentaRoutes);
 router.use(pedidoVentaDetalleRoutes);
+router.use(cajaRoutes);
 
 
 export default router;
