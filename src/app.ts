@@ -6,7 +6,7 @@ import router from "./routes/routes";
 const app = express();
 
 //const ipAddress = '192.168.0.111'; // Direccion IP TRABAJO
-const ipAddress = '192.168.100.7'; // Direccion IP CASA
+//const ipAddress = '192.168.100.7'; // Direccion IP CASA
 const ipAddressLocal = 'localhost'; // Cambia a tu dirección IP local
 
 // Middleware para parsear JSON en las solicitudes
@@ -36,8 +36,8 @@ const PORT = envPort || defaultPort;
 
 
 //En la red misma
-app.listen(PORT, ipAddress, () => {
-  console.log(`Servidor escuchando en http://${ipAddress}:${PORT}`);
+app.listen(PORT, ipAddressLocal, () => {
+  console.log(`Servidor escuchando en http://${ipAddressLocal}:${PORT}`);
 });
 //En la maquina
 /*

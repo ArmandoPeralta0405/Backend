@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `caja` (
   PRIMARY KEY (`caja_id`),
   KEY `FK_M_CAJA` (`moneda_id`),
   CONSTRAINT `FK_M_CAJA` FOREIGN KEY (`moneda_id`) REFERENCES `moneda` (`moneda_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre cajas en el sistema';
+) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre cajas en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: cliente
@@ -154,7 +154,32 @@ CREATE TABLE IF NOT EXISTS `moneda` (
   `abreviacion` varchar(10) NOT NULL COMMENT 'Abreviación de la moneda (hasta 10 caracteres)',
   `decimal` int(10) NOT NULL COMMENT 'Decimales que maneja la moneda',
   PRIMARY KEY (`moneda_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre monedas en el sistema';
+) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre monedas en el sistema';
+
+# ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: movimiento
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `movimiento` (
+  `movimiento_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del movimiento',
+  `fecha_hora_apertura` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha y hora del movimiento',
+  `observacion_apertura` varchar(255) DEFAULT NULL COMMENT 'Observación del movimiento de apertura',
+  `caja_id` int(11) NOT NULL COMMENT 'identificador de la caja utilizada',
+  `usuario_id` int(11) NOT NULL COMMENT 'Identificador del usuario relacionado al movimiento',
+  `moneda_id` int(11) NOT NULL COMMENT 'Identificador de la moneda relacionada al movimiento',
+  `monto_apertura` decimal(15, 3) NOT NULL COMMENT 'Monto del movimiento',
+  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Estado del movimiento (1: Abierto, 0: Cerrado)',
+  `fecha_hora_cierre` datetime DEFAULT NULL COMMENT 'Fecha y hora de cierre del movimiento',
+  `monto_cierre` decimal(15, 3) DEFAULT NULL COMMENT 'Monto de cierre del movimiento',
+  `observacion_cierre` varchar(255) DEFAULT NULL COMMENT 'Observación del movimiento de cierre',
+  PRIMARY KEY (`movimiento_id`),
+  KEY `FK_MOVIMIENTO_USUARIO` (`usuario_id`),
+  KEY `FK_MOVIMIENTO_MONEDA` (`moneda_id`),
+  KEY `FK_MOVIMIENTO_CAJA` (`caja_id`),
+  CONSTRAINT `FK_MOVIMIENTO_CAJA` FOREIGN KEY (`caja_id`) REFERENCES `caja` (`caja_id`),
+  CONSTRAINT `FK_MOVIMIENTO_MONEDA` FOREIGN KEY (`moneda_id`) REFERENCES `moneda` (`moneda_id`),
+  CONSTRAINT `FK_MOVIMIENTO_USUARIO` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`usuario_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre movimientos en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: pedido_venta
@@ -176,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `pedido_venta` (
   CONSTRAINT `FK_PV_LISTA_PRECIO` FOREIGN KEY (`lista_precio_id`) REFERENCES `lista_precio` (`lista_precio_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_PV_MONEDA` FOREIGN KEY (`moneda_id`) REFERENCES `moneda` (`moneda_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_PV_USUARIO` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`usuario_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre pedidos de venta en el sistema';
+) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre pedidos de venta en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: pedido_venta_detalle
@@ -207,6 +232,16 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `descripcion` varchar(100) NOT NULL COMMENT 'Descripción del rol (hasta 100 caracteres)',
   PRIMARY KEY (`rol_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre roles de usuarios en el sistema';
+
+# ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: tipo_documento
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tipo_documento` (
+  `tipo_documento_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento',
+  `descripcion` varchar(255) NOT NULL COMMENT 'Descripción del tipo de documento',
+  PRIMARY KEY (`tipo_documento_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena tipos de documentos en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tipo_programa
@@ -302,6 +337,23 @@ from
     left join `impuesto` `i` on(`a`.`impuesto_id` = `i`.`impuesto_id`)
   )
   left join `unidad_medida` `u` on(`a`.`unidad_medida_id` = `u`.`unidad_medida_id`)
+  );
+
+# ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: caja_view
+# ------------------------------------------------------------
+
+CREATE OR REPLACE VIEW `caja_view` AS
+select
+  `c`.`caja_id` AS `caja_id`,
+  `c`.`descripcion` AS `descripcion`,
+  `c`.`moneda_id` AS `moneda_id`,
+  `m`.`descripcion` AS `descripcion_moneda`,
+  `c`.`estado` AS `estado`
+from
+  (
+  `caja` `c`
+  join `moneda` `m` on(`m`.`moneda_id` = `c`.`moneda_id`)
   );
 
 # ------------------------------------------------------------
@@ -1241,15 +1293,11 @@ VALUES
 INSERT INTO
   `caja` (`caja_id`, `descripcion`, `moneda_id`, `estado`)
 VALUES
-  (1, 'Caja Prueba 1', 1, 1);
+  (1, 'CAJA SALON', 1, 1);
 INSERT INTO
   `caja` (`caja_id`, `descripcion`, `moneda_id`, `estado`)
 VALUES
-  (2, 'Caja Prueba 2', 1, 1);
-INSERT INTO
-  `caja` (`caja_id`, `descripcion`, `moneda_id`, `estado`)
-VALUES
-  (3, 'Caja Prueba 3', 1, 1);
+  (2, 'CAJA AUXILIAR', 1, 0);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: cliente
@@ -1606,16 +1654,91 @@ INSERT INTO
   )
 VALUES
   (1, 'Guaranies', 'Gs', 0);
+INSERT INTO
+  `moneda` (
+    `moneda_id`,
+    `descripcion`,
+    `abreviacion`,
+    `decimal`
+  )
+VALUES
+  (2, 'Dolares', 'Us', 3);
+
+# ------------------------------------------------------------
+# DATA DUMP FOR TABLE: movimiento
+# ------------------------------------------------------------
+
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: pedido_venta
 # ------------------------------------------------------------
 
+INSERT INTO
+  `pedido_venta` (
+    `pedido_venta_id`,
+    `fecha_hora`,
+    `moneda_id`,
+    `lista_precio_id`,
+    `numero_pedido`,
+    `observacion`,
+    `usuario_id`,
+    `estado`
+  )
+VALUES
+  (1, '2023-09-29 12:59:06', 1, 1, 1, 'prueba', 1, 1);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: pedido_venta_detalle
 # ------------------------------------------------------------
 
+INSERT INTO
+  `pedido_venta_detalle` (
+    `pedido_venta_id`,
+    `item_numero`,
+    `articulo_id`,
+    `cantidad`,
+    `precio`,
+    `monto_neto`,
+    `monto_iva`,
+    `porcentaje_iva`,
+    `referencia`
+  )
+VALUES
+  (
+    1,
+    1,
+    30,
+    5.000,
+    71720.000,
+    326000.000,
+    32600.000,
+    10.000,
+    'TIJE001'
+  );
+INSERT INTO
+  `pedido_venta_detalle` (
+    `pedido_venta_id`,
+    `item_numero`,
+    `articulo_id`,
+    `cantidad`,
+    `precio`,
+    `monto_neto`,
+    `monto_iva`,
+    `porcentaje_iva`,
+    `referencia`
+  )
+VALUES
+  (
+    1,
+    2,
+    43,
+    1.000,
+    47940.000,
+    43582.000,
+    4358.000,
+    10.000,
+    'MARC001'
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: rol
@@ -1645,6 +1768,11 @@ INSERT INTO
   `rol` (`rol_id`, `descripcion`)
 VALUES
   (6, 'Basculero/a');
+
+# ------------------------------------------------------------
+# DATA DUMP FOR TABLE: tipo_documento
+# ------------------------------------------------------------
+
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tipo_programa

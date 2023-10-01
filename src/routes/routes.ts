@@ -19,6 +19,8 @@ import clienteRoutes from '../routes/clienteRoutes';
 import pedidoVentaRoutes from '../routes/pedido_ventaRoutes';
 import pedidoVentaDetalleRoutes from '../routes/pedido_venta_detalleRoutes';
 import cajaRoutes from '../routes/cajaRoutes';
+import MovimientoRoutes from '../routes/movimientoRoutes';
+import TipoDocumentoRoutes from '../routes/tipo_documentoRoutes';
 
 
 
@@ -43,6 +45,8 @@ router.use(clienteRoutes);
 router.use(pedidoVentaRoutes);
 router.use(pedidoVentaDetalleRoutes);
 router.use(cajaRoutes);
+router.use(MovimientoRoutes);
+router.use(TipoDocumentoRoutes);
 
 
 export default router;
