@@ -234,6 +234,26 @@ CREATE TABLE IF NOT EXISTS `rol` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre roles de usuarios en el sistema';
 
 # ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: timbrado
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `timbrado` (
+  `timbrado_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del timbrado',
+  `numero` int(11) NOT NULL COMMENT 'Número de timbrado',
+  `establecimiento` int(11) NOT NULL COMMENT 'Establecimiento',
+  `punto_emision` int(11) NOT NULL COMMENT 'Punto de emisión',
+  `numero_inicial` int(11) NOT NULL COMMENT 'Número inicial',
+  `numero_final` int(11) NOT NULL COMMENT 'Número final',
+  `fecha_inicial` date NOT NULL COMMENT 'Fecha inicial',
+  `fecha_final` date NOT NULL COMMENT 'Fecha final',
+  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Estado del timbrado (activo/inactivo)',
+  `tipo_documento_id` int(11) NOT NULL COMMENT 'El tipo de documento asignado de la tabla tipo_documento',
+  PRIMARY KEY (`timbrado_id`),
+  KEY `FK_TIMBRADO_TIPO_DOCUMENTO` (`tipo_documento_id`),
+  CONSTRAINT `FK_TIMBRADO_TIPO_DOCUMENTO` FOREIGN KEY (`tipo_documento_id`) REFERENCES `tipo_documento` (`tipo_documento_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena información sobre timbrados en el sistema';
+
+# ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tipo_documento
 # ------------------------------------------------------------
 
@@ -241,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `tipo_documento` (
   `tipo_documento_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento',
   `descripcion` varchar(255) NOT NULL COMMENT 'Descripción del tipo de documento',
   PRIMARY KEY (`tipo_documento_id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena tipos de documentos en el sistema';
+) ENGINE = InnoDB AUTO_INCREMENT = 5 DEFAULT CHARSET = utf8mb4 COMMENT = 'Tabla que almacena tipos de documentos en el sistema';
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tipo_programa
@@ -470,6 +490,33 @@ from
   )
   left join `usuario` `u` on(`pv`.`usuario_id` = `u`.`usuario_id`)
   );
+
+# ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: timbrado_view
+# ------------------------------------------------------------
+
+CREATE OR REPLACE VIEW `timbrado_view` AS
+select
+  `t`.`timbrado_id` AS `timbrado_id`,
+  lpad(`t`.`numero`, 8, 0) AS `numero`,
+  `t`.`establecimiento` AS `establecimiento`,
+  `t`.`punto_emision` AS `punto_emision`,
+  `t`.`numero_inicial` AS `numero_inicial`,
+  `t`.`numero_final` AS `numero_final`,
+  date_format(`t`.`fecha_inicial`, '%d/%m/%Y') AS `fecha_inicial`,
+  date_format(`t`.`fecha_final`, '%d/%m/%Y') AS `fecha_final`,
+  `t`.`estado` AS `estado`,
+  `t`.`tipo_documento_id` AS `tipo_documento_id`,
+  `td`.`descripcion` AS `descripcion_tipo_documento`
+from
+  (
+  `timbrado` `t`
+  join `tipo_documento` `td` on(
+    `td`.`tipo_documento_id` = `t`.`tipo_documento_id`
+  )
+  )
+order by
+  1;
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: articulo
@@ -1770,9 +1817,56 @@ VALUES
   (6, 'Basculero/a');
 
 # ------------------------------------------------------------
+# DATA DUMP FOR TABLE: timbrado
+# ------------------------------------------------------------
+
+INSERT INTO
+  `timbrado` (
+    `timbrado_id`,
+    `numero`,
+    `establecimiento`,
+    `punto_emision`,
+    `numero_inicial`,
+    `numero_final`,
+    `fecha_inicial`,
+    `fecha_final`,
+    `estado`,
+    `tipo_documento_id`
+  )
+VALUES
+  (
+    1,
+    11112222,
+    2,
+    3,
+    500,
+    2500,
+    '2023-01-05',
+    '2025-12-31',
+    1,
+    1
+  );
+
+# ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tipo_documento
 # ------------------------------------------------------------
 
+INSERT INTO
+  `tipo_documento` (`tipo_documento_id`, `descripcion`)
+VALUES
+  (1, 'FACTURA');
+INSERT INTO
+  `tipo_documento` (`tipo_documento_id`, `descripcion`)
+VALUES
+  (2, 'NOTA DE CRÉDITO');
+INSERT INTO
+  `tipo_documento` (`tipo_documento_id`, `descripcion`)
+VALUES
+  (3, 'NOTA DE DÉBITO');
+INSERT INTO
+  `tipo_documento` (`tipo_documento_id`, `descripcion`)
+VALUES
+  (4, 'REMISION');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tipo_programa

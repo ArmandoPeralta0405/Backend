@@ -62,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
             // Otros datos que quieras incluir en el token
         };
 
-        jwt.sign(payload, secretKey, { expiresIn: '4h' }, (err, token) => {
+        jwt.sign(payload, secretKey, { expiresIn: '8h' }, (err, token) => {
             if (err) throw err;
             res.json({ token });
         });

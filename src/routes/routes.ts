@@ -21,6 +21,7 @@ import pedidoVentaDetalleRoutes from '../routes/pedido_venta_detalleRoutes';
 import cajaRoutes from '../routes/cajaRoutes';
 import MovimientoRoutes from '../routes/movimientoRoutes';
 import TipoDocumentoRoutes from '../routes/tipo_documentoRoutes';
+import TimbradoRoutes from '../routes/timbradoRoutes';
 
 
 
@@ -47,6 +48,7 @@ router.use(pedidoVentaDetalleRoutes);
 router.use(cajaRoutes);
 router.use(MovimientoRoutes);
 router.use(TipoDocumentoRoutes);
+router.use(TimbradoRoutes);
 
 
 export default router;
